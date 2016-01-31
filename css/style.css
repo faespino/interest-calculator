@@ -1,0 +1,8 @@
+.page-header {text-align: center; color: #660033;}
+span {color: red;}
+h2 {color: #999;}
+.glyphicon {color: green;}
+.btn.btn-default:hover {color: #660033; background-color: #CCFF99;}
+.err {color: red;}
+#myModal {display: none;}
+#confirmation  {display: inline; color: green;}
