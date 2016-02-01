@@ -11,9 +11,6 @@
 
 <!-- Latest compiled JavaScript -->
 		<script src="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>
-		<script src="js/clock.js"></script>
-		<script src="js/showFields.js" type="text/javascript"></script>
-		<script src="js/toControllers.js" type="text/javascript"></script>
 		<link href="css/style.css" type="text/css" rel="stylesheet">
 		<!--<link href="css/main.css" rel="stylesheet" type='text/css'>-->
 		<link href='https://fonts.googleapis.com/css?family=Poiret+One' rel='stylesheet' type='text/css'>
@@ -27,16 +24,16 @@
 			if ($_SERVER["REQUEST_METHOD"] == "POST") 
 			{
 			
-			//check rate input
+			//check rate input. Only integers and floating numbers are allowed. 
 				if (!isset($_POST["rate"]) || empty($_POST["rate"])) 
 				{
 					$rateErr = "Interest rate must be provider!";
-					$rate = $_POST["rate"];
+					//$rate = $_POST["rate"];
 					echo '<script>$(document).ready(function(){$("#lrate").addClass("alert alert-danger")});</script>';
 				//check if rate is a valid float or integer
 				} else if (!is_numeric($_POST["rate"]))
 				{
-					$rateErr = "Interest rate must be a valid number eg. 4.5 or 3!";
+					$rateErr = "Interest rate must be a valid number eg. 4.5, 3, or 27!";
 					echo '<script>$(document).ready(function(){$("#lrate").addClass("alert alert-danger")});</script>';;
 			 	} else
 				{
@@ -45,13 +42,18 @@
 					//echo "this is rate after urlecode" . $rate;
 				}	
 				
-			//check amount input
+			//check amount input. Only integers and floating point numbers are allowed.
 				if (!isset($_POST["amount"] ) || empty($_POST["amount"])) 
 				{
 					$amountErr = "Amount of loan must be provided!";
 					echo '<script>$(document).ready(function(){$("#lamount").addClass("alert alert-danger")});</script>';
-				} else {
-					$amount = $_POST["amount"];
+				} else if (!is_numeric($_POST["amount"]))
+				{
+					$amountErr = "Amount must be a valid number eg. if amount is $10,580 enter 10580";
+					echo '<script>$(document).ready(function(){$("#lamount").addClass("alert alert-danger")});</script>';
+				} else 
+				{
+					$amount = trim($_POST["amount"], "-+$,");
 				}	
 			
 			//check term input
@@ -79,14 +81,14 @@
 		<div class="container">
 			<h1 class="page-header"><span class="glyphicon glyphicon-calendar"></span> Loan Payment Calculator</h1>
 		<h2>Enter Loan Information</h2>
-			<form role="form" method="post" action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]);?>">
+			<form role="form" method="post" action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]);?>" id="calc" name="calc">
 				<div class="form-group" id="lrate">
 					<label for="rate">Enter interest Rate: <span class="err">*<?php echo $rateErr; ?></span></label>
-					<input type="text" class="form-control" name="rate" value="<?php echo $rate; ?>">
+					<input type="text" class="form-control" name="rate" value="<?php echo $rate; ?>" placeholder="e.g. 3.4">
 				</div>
 				<div class="form-group" id="lamount">
 					<label for="loanAmt">Amount of Loan: <span class="err">*<?php echo $amountErr; ?></span></label>
-					<input type="text" class="form-control" name="amount" value="<?php echo $amount; ?>" placeholder="$"> 
+					<input type="text" class="form-control" name="amount" value="<?php echo $amount; ?>" placeholder="e.g 5000"> 
 				</div>
 				<div class="form-group" id="lterm">
 					<label for="term">Term: <span>*<?php echo $termErr; ?></span></label>
@@ -98,6 +100,8 @@
 				</div>
 				<div class="form-group">
 					<button type="submit" class="btn btn-default" name="payment" id="submit" pull-left>Calculate Monthly Payment</button>
+
+					<button type="reset" class="btn btn-default pull-right" name="payment" id="resetForm">Reset Form</button>
 				</div>
 			</form>
 
@@ -119,6 +123,5 @@
 			</div>
 		</div>
 		</div>
-
 	</body>
 	</html>
