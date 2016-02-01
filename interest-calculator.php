@@ -1,3 +1,6 @@
+<?php 
+	require('app/calculations.php');
+?>
 <!DOCTYPE html>
 <html lang="en">
   <head>
@@ -11,77 +14,49 @@
 
 <!-- Latest compiled JavaScript -->
 		<script src="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>
+		<script>
+			$(document).ready(function() {
+				//this function sends user input data to server for processing
+				//if successful successCallback is called
+				function postRequest(postData, successCallback) {
+					var request = 
+						$.ajax({
+							url: "app/calculations.php",
+							method: "POST",
+							data: postData		
+						})
+					request.done(successCallback);	
+				}
+				
+				//this function is called when a request to the server is successful
+				//it returns the data from the server and appends it to the html body
+				function successCallback(data) {
+					console.log("this is data from sever, ", data);
+					$('body').append(data);
+				}
+	
+				//when the user submits the form, we send their data through the serialize 
+				//function that handles spaces in user input
+				//then we make a request to the server that will process the data
+				$('#submitInfo').on('click', function(event){
+						event.preventDefault();
+						var postData = $('#calc').serialize();
+						console.log("this is postData sent to the server, ", postData);
+						postRequest(postData, successCallback);
+				});
+			});
+		
+		
+		</script>
 		<link href="css/style.css" type="text/css" rel="stylesheet">
 		<!--<link href="css/main.css" rel="stylesheet" type='text/css'>-->
 		<link href='https://fonts.googleapis.com/css?family=Poiret+One' rel='stylesheet' type='text/css'>
 	</head>
 	<body>
-		<?php 
-			$rateErr = $amountErr = $termErr = "";
-			$rate = $amount = $termErr = "";
-			$payment = "hello";
-			
-			if ($_SERVER["REQUEST_METHOD"] == "POST") 
-			{
-			
-			//check rate input. Only integers and floating numbers are allowed. 
-				if (!isset($_POST["rate"]) || empty($_POST["rate"])) 
-				{
-					$rateErr = "Interest rate must be provider!";
-					//$rate = $_POST["rate"];
-					echo '<script>$(document).ready(function(){$("#lrate").addClass("alert alert-danger")});</script>';
-				//check if rate is a valid float or integer
-				} else if (!is_numeric($_POST["rate"]))
-				{
-					$rateErr = "Interest rate must be a valid number eg. 4.5, 3, or 27!";
-					echo '<script>$(document).ready(function(){$("#lrate").addClass("alert alert-danger")});</script>';;
-			 	} else
-				{
-				//if rate is valide number trim removes any plus or minus sign from user input, we don't need negative interest numbers
-					$rate = trim($_POST["rate"], "-+");
-					//echo "this is rate after urlecode" . $rate;
-				}	
-				
-			//check amount input. Only integers and floating point numbers are allowed.
-				if (!isset($_POST["amount"] ) || empty($_POST["amount"])) 
-				{
-					$amountErr = "Amount of loan must be provided!";
-					echo '<script>$(document).ready(function(){$("#lamount").addClass("alert alert-danger")});</script>';
-				} else if (!is_numeric($_POST["amount"]))
-				{
-					$amountErr = "Amount must be a valid number eg. if amount is $10,580 enter 10580";
-					echo '<script>$(document).ready(function(){$("#lamount").addClass("alert alert-danger")});</script>';
-				} else 
-				{
-					$amount = trim($_POST["amount"], "-+$,");
-				}	
-			
-			//check term input
-				if (!isset($_POST["term"] ) || empty($_POST["term"])) 
-				{
-					$termErr = "The term period of your loan must be selected!";
-					echo '<script>$(document).ready(function(){$("#lterm").addClass("alert alert-danger")});</script>';
-				} else {
-					$term = $_POST["term"];
-				}
-					
-			}
-	
-			//if input passes validation, show calculate and show monthly payment
-			if (isset($rate) && !empty($rate) && isset($amount) && !empty($amount) && isset($term) && !empty($term))
-			{ 
-				$percentage_rate = ( $rate / 100 ) / 12;
-        $top = pow( 1 + $percentage_rate, $term);
-        $bottom = pow(1 + $percentage_rate, $term) - 1;
-        $payment = round(( $amount * $percentage_rate ) * ( $top / $bottom ), 2); 
-		    // Show the Modal that displays info
-				print '<script>$(document).ready(function(){ $("#myModal").modal("show"); });</script>';
-			} 
-		?>
 		<div class="container">
 			<h1 class="page-header"><span class="glyphicon glyphicon-calendar"></span> Loan Payment Calculator</h1>
 		<h2>Enter Loan Information</h2>
-			<form role="form" method="post" action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]);?>" id="calc" name="calc">
+			<form role="form" id="calc" name="calc1">
 				<div class="form-group" id="lrate">
 					<label for="rate">Enter interest Rate: <span class="err">*<?php echo $rateErr; ?></span></label>
 					<input type="text" class="form-control" name="rate" value="<?php echo $rate; ?>" placeholder="e.g. 3.4">
@@ -99,7 +74,7 @@
 					</div>
 				</div>
 				<div class="form-group">
-					<button type="submit" class="btn btn-default" name="payment" id="submit" pull-left>Calculate Monthly Payment</button>
+					<button type="submit" class="btn btn-default" name="payment" id="submitInfo" pull-left>Calculate Monthly Payment</button>
 
 					<button type="reset" class="btn btn-default pull-right" name="payment" id="resetForm">Reset Form</button>
 				</div>
@@ -114,7 +89,7 @@
 						<h4 class="modal-title">Your Calulated Monthly Payment</h4>
 					</div>
 					<div class="modal-body">
-						<h1>$<?php print $payment; ?></h1>
+						<h1 id="payment"></h1>
 					</div>
 					<div class="modal-footer">
 						<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
