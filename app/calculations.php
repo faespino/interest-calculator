@@ -9,14 +9,14 @@
 			//check rate input. Only integers and floating numbers are allowed. 
 				if (!isset($_POST["rate"]) || empty($_POST["rate"])) 
 				{
-					$rateErr = "Interest rate must be provider!";
+					$rateErr = "Interest rate must be provided!";
 					//$rate = $_POST["rate"];
-					echo '<script>$(document).ready(function(){$("#lrate").addClass("alert alert-danger")});</script>';
+					echo '<script>$(document).ready(function(){$("#lrate").addClass("alert alert-danger"); $(".rateErr").html("*' . $rateErr . '");});</script>';
 				//check if rate is a valid float or integer
 				} else if (!is_numeric($_POST["rate"]))
 				{
 					$rateErr = "Interest rate must be a valid number eg. 4.5, 3, or 27!";
-					echo '<script>$(document).ready(function(){$("#lrate").addClass("alert alert-danger")});</script>';;
+					echo '<script>$(document).ready(function(){$("#lrate").addClass("alert alert-danger"); $(".rateErr").html("*' . $rateErr . '");});</script>';
 			 	} else
 				{
 				//if rate is valide number trim removes any plus or minus sign from user input, we don't need negative interest numbers
@@ -28,11 +28,11 @@
 				if (!isset($_POST["amount"] ) || empty($_POST["amount"])) 
 				{
 					$amountErr = "Amount of loan must be provided!";
-					echo '<script>$(document).ready(function(){$("#lamount").addClass("alert alert-danger")});</script>';
+					echo '<script>$(document).ready(function(){$("#lamount").addClass("alert alert-danger"); $(".amountErr").html("*' . $amountErr . '");});</script>';
 				} else if (!is_numeric($_POST["amount"]))
 				{
 					$amountErr = "Amount must be a valid number eg. if amount is $10,580 enter 10580";
-					echo '<script>$(document).ready(function(){$("#lamount").addClass("alert alert-danger")});</script>';
+					echo '<script>$(document).ready(function(){$("#lamount").addClass("alert alert-danger"); $(".amountErr").html("*' . $amountErr . '");});</script>';
 				} else 
 				{
 					$amount = trim($_POST["amount"], "-+$,");
@@ -42,7 +42,7 @@
 				if (!isset($_POST["term"] ) || empty($_POST["term"])) 
 				{
 					$termErr = "The term period of your loan must be selected!";
-					echo '<script>$(document).ready(function(){$("#lterm").addClass("alert alert-danger")});</script>';
+					echo '<script>$(document).ready(function(){$("#lamount").addClass("alert alert-danger"); $(".termErr").html("*' . $termErr . '");});</script>';
 				} else {
 					$term = $_POST["term"];
 				}
