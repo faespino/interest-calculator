@@ -21,6 +21,7 @@
 				{
 				//if rate is valide number trim removes any plus or minus sign from user input, we don't need negative interest numbers
 					$rate = trim($_POST["rate"], "-+");
+					echo '<script>$("#lrate").removeClass("alert alert-danger"); $(".rateErr").html("*' . $rateErr . '");</script>';
 					//echo "this is rate after urlecode" . $rate;
 				}	
 				
@@ -36,15 +37,17 @@
 				} else 
 				{
 					$amount = trim($_POST["amount"], "-+$,");
+					echo '<script>$("#lamount").removeClass("alert alert-danger"); $(".amountErr").html("*' . $amountErr . '");</script>';
 				}	
 			
 			//check term input
 				if (!isset($_POST["term"] ) || empty($_POST["term"])) 
 				{
 					$termErr = "The term period of your loan must be selected!";
-					echo '<script>$(document).ready(function(){$("#lamount").addClass("alert alert-danger"); $(".termErr").html("*' . $termErr . '");});</script>';
+					echo '<script>$(document).ready(function(){$(".termErr").addClass("alert alert-danger"); $(".termErr").html("*' . $termErr . '");});</script>';
 				} else {
 					$term = $_POST["term"];
+					echo '<script>$(".termErr").removeClass("alert alert-danger"); $(".termErr").html("*' . $termErr . '");</script>';
 				}
 					
 			
@@ -58,7 +61,7 @@
         $payment = round(( $amount * $percentage_rate ) * ( $top / $bottom ), 2); 
 		    // Show the Modal that displays info
 				//echo "<p>succesfully connected to server</p>";
-				print "<script>$(document).ready(function(){ $('#payment').html(" . $payment . "); $('#myModal').modal('show'); });</script>";
+				print '<script>$(document).ready(function(){ $("#payment").html(' . $payment . '); $("#myModal").modal("show"); $(".amountErr").html("*' . $amountErr . '");});</script>';
 			} 
 		}
 ?>
