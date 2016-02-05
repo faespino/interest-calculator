@@ -3,20 +3,24 @@ $(document).ready(function() {
 	//removing all data an error messages and alerts
 	$('#resetForm').on('click', function(){
 		$('div').removeClass('alert alert-danger');
+		$('span.termErr').removeClass('alert alert-danger');
 		$('.rateErr').empty();
 		$('.amountErr').empty();
+		$('.termErr').empty();
 	});	
 	
 	//this function sends user input data to server for processing
-	//if successful successCallback is called
-	function postRequest(postData, successCallback) {
+	//if successful successCallback is called 
+	//if request to server fails, failureCallBack is called
+	function postRequest(postData, successCallback, failureCallBack) {
 		var request = 
 			$.ajax({
 				url: "app/calculations.php",
 				method: "POST",
 				data: postData		
 			})
-			request.done(successCallback);	
+			request.done(successCallback);
+			request.fail(failureCallback)
 	}
 				
 	//this function is called when a request to the server is successful
@@ -24,6 +28,16 @@ $(document).ready(function() {
 	function successCallback(data) {
 		console.log("this is data from sever, ", data);
 		$('body').append(data);
+	}
+	
+	
+	//this function is called when a request to the server is unsuccessful
+	//it informs the user of the error sent back to the server
+	function failureCallback(xhr, status) {
+				console.log("this is xhr, ", xhr)
+		console.log("this is status from sever, ", status.status + status.statusText);
+
+		//$('body').append(data);
 	}
 	
 	//when the user submits the form, we send their data through the serialize 
