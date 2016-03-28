@@ -1,0 +1,11 @@
+{
+    "name": "faespino/interest-calculator",
+    "description": "gets the interest rate, amount of loan, and loan term from a user and provides them with what their monthly payment will be",
+    "authors": [
+        {
+            "name": "Fernando Espinoza",
+            "email": "faespino@uwaterloo.ca"
+        }
+    ],
+    "require": {}
+}
